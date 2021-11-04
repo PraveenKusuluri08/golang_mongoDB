@@ -10,6 +10,8 @@ import (
 
 	"github.com/PraveenKusuluri08/model"
 	"github.com/PraveenKusuluri08/util"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -60,4 +62,30 @@ func CreateUserAccout(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(userId)
 
 	json.NewEncoder(w).Encode("User created Successfully")
+}
+
+func getAllUsers() []primitive.M {
+	cursor, err := collection.Find(context.Background(), bson.D{{}}, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var users []primitive.M
+	for cursor.Next(context.Background()) {
+		var user primitive.M
+		err := cursor.Decode(&user)
+		if err != nil {
+			log.Fatal(err)
+		}
+		users = append(users, user)
+	}
+	defer cursor.Close(context.Background())
+	return users
+}
+
+func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	usersData := getAllUsers()
+	json.NewEncoder(w).Encode(usersData)
 }
