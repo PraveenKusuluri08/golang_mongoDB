@@ -10,6 +10,7 @@ type User struct {
 	Role       int                `json:"role"`
 	CreatedAt  string             `json:"createdAt"`
 	Course     *Courses           `json:"course"`
+	IsExists   bool               `json:"isExists"`
 	UserId     primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 }
 
