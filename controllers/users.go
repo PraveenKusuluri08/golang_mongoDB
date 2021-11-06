@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/PraveenKusuluri08/model"
 	"github.com/PraveenKusuluri08/util"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -60,7 +62,7 @@ func CreateUserAccout(w http.ResponseWriter, r *http.Request) {
 
 	userId := createUser(user)
 	fmt.Println(userId)
-
+	fmt.Println(reflect.TypeOf(r.Body))
 	json.NewEncoder(w).Encode("User created Successfully")
 }
 
@@ -85,7 +87,25 @@ func getAllUsers() []primitive.M {
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
-
+	fmt.Println(reflect.TypeOf(r.Body))
 	usersData := getAllUsers()
 	json.NewEncoder(w).Encode(usersData)
+}
+
+func UpdateSingleUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
+	params := mux.Vars(r)
+	id, err := primitive.ObjectIDFromHex(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"isExists": false, "isLoggedin": false}}
+	data, err1 := collection.UpdateOne(context.Background(), filter, update)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	defer r.Body.Close()
+	json.NewEncoder(w).Encode(data)
 }
