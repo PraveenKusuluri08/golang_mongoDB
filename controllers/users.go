@@ -109,3 +109,25 @@ func UpdateSingleUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	json.NewEncoder(w).Encode(data)
 }
+
+func deleteSingleUser(userID string) {
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		panic(err)
+	}
+	filter := bson.M{"_id": id}
+	count, err := collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(count)
+}
+
+func DeleteSingleUser(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	w.Header().Set("Content-type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
+	params := mux.Vars(r)
+	deleteSingleUser(params["id"])
+	json.NewEncoder(w).Encode("User deleted successfully")
+}
