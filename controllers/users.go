@@ -43,7 +43,7 @@ func createUser(user model.User) interface{} {
 	passwordHashed, _ := util.PasswordHasher(user.Password)
 	user.Password = passwordHashed
 	user.CreatedAt = time.Now().String()
-
+	user.IsExists = true
 	createUser, err := collection.InsertOne(context.Background(), user)
 
 	if err != nil {
@@ -101,7 +101,7 @@ func UpdateSingleUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"isExists": false, "isLoggedin": false}}
+	update := bson.M{"$set": bson.M{"isLoggedin": false}}
 	data, err1 := collection.UpdateOne(context.Background(), filter, update)
 	if err1 != nil {
 		log.Fatal(err1)
@@ -126,8 +126,61 @@ func deleteSingleUser(userID string) {
 func DeleteSingleUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	w.Header().Set("Content-type", "application/json")
-	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
 	params := mux.Vars(r)
 	deleteSingleUser(params["id"])
 	json.NewEncoder(w).Encode("User deleted successfully")
+}
+
+//TODO:Delete If User is not exists, Means isExists=false(wrost case->User request to delete Accout perminently)
+//TODO:Delete If User is Request to delete ->We need to set isExists=false (we need to take care in Frontend To display user when is isExists=false)
+//TODO:We need to have two routes for this
+
+func disableUser(userId string) interface{} {
+	id, err := primitive.ObjectIDFromHex(userId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"isexists": false}}
+	data, err1 := collection.UpdateOne(context.Background(), filter, update)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	fmt.Println("Data disabled successfully")
+	return data
+}
+
+func DisableUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	fmt.Println("cxfc", params["id"])
+	count := disableUser(params["id"])
+
+	json.NewEncoder(w).Encode(count)
+}
+
+func enableUser(userId string) interface{} {
+	id, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"isexists": false}}
+	data, err1 := collection.UpdateOne(context.Background(), filter, update)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	fmt.Println("Data disabled successfully")
+	return data
+}
+
+//enable user
+
+func EnableUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
+	params := mux.Vars(r)
+	count := enableUser(params["id"])
+	json.NewEncoder(w).Encode(count)
 }
