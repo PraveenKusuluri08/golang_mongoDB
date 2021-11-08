@@ -66,6 +66,8 @@ func CreateUserAccout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("User created Successfully")
 }
 
+//get all users control functions
+
 func getAllUsers() []primitive.M {
 	cursor, err := collection.Find(context.Background(), bson.D{{}}, nil)
 	if err != nil {
@@ -84,6 +86,7 @@ func getAllUsers() []primitive.M {
 	return users
 }
 
+//get all users function
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
@@ -92,6 +95,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(usersData)
 }
 
+//Update User control Function
 func UpdateSingleUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
@@ -110,6 +114,8 @@ func UpdateSingleUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
+//Perminently delete user control function
+
 func deleteSingleUser(userID string) {
 	id, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
@@ -123,6 +129,7 @@ func deleteSingleUser(userID string) {
 	fmt.Println(count)
 }
 
+//Perminently delete user function
 func DeleteSingleUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	w.Header().Set("Content-type", "application/json")
@@ -135,6 +142,7 @@ func DeleteSingleUser(w http.ResponseWriter, r *http.Request) {
 //TODO:Delete If User is Request to delete ->We need to set isExists=false (we need to take care in Frontend To display user when is isExists=false)
 //TODO:We need to have two routes for this
 
+//diable user control function
 func disableUser(userId string) interface{} {
 	id, err := primitive.ObjectIDFromHex(userId)
 
@@ -151,6 +159,8 @@ func disableUser(userId string) interface{} {
 	return data
 }
 
+//Disable user fuction
+
 func DisableUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -160,6 +170,7 @@ func DisableUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(count)
 }
 
+//enable user control function
 func enableUser(userId string) interface{} {
 	id, err := primitive.ObjectIDFromHex(userId)
 	if err != nil {
@@ -183,4 +194,29 @@ func EnableUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	count := enableUser(params["id"])
 	json.NewEncoder(w).Encode(count)
+}
+
+//Get the single user from the database
+func getSingleUser(userId string) interface{} {
+	id, err := primitive.ObjectIDFromHex(userId)
+
+	if err != nil {
+		log.Panic(err)
+	}
+	var user bson.M
+	filter := bson.M{"_id": id}
+	var singleUser []primitive.M
+	err1 := collection.FindOne(context.Background(), filter).Decode(&user)
+	if err1 != nil {
+		log.Fatal(err)
+	}
+	singleUser = append(singleUser, user)
+	return singleUser
+}
+
+func GetSingleUserDocument(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	data := getSingleUser(params["id"])
+	json.NewEncoder(w).Encode(data)
 }
