@@ -220,3 +220,23 @@ func GetSingleUserDocument(w http.ResponseWriter, r *http.Request) {
 	data := getSingleUser(params["id"])
 	json.NewEncoder(w).Encode(data)
 }
+
+//Wrost case opeartion
+//if there are any problems with the db then only we need to perform
+//this operation
+
+// We need to do only when the users which are isExists==false
+func deleteAllUser() interface{} {
+	filter := bson.M{"isexists": false}
+	count, err := collection.DeleteMany(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return count
+}
+
+func DeleteAllUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	count := deleteAllUser()
+	json.NewEncoder(w).Encode(count)
+}
