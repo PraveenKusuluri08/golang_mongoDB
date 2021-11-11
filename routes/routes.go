@@ -15,5 +15,8 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/disableUser/{id}", controllers.DisableUser).Methods("PUT")
 	router.HandleFunc("/api/enableUser", controllers.EnableUser).Methods("PUT")
 	router.HandleFunc("/api/getSingleUser/{id}", controllers.GetSingleUserDocument)
+
+	//Courses routes
+	router.HandleFunc(`/api/user/createnewcourse/{id}`, controllers.CreateCourse).Methods("POST")
 	return router
 }

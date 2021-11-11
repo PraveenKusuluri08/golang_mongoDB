@@ -44,6 +44,7 @@ func createUser(user model.User) interface{} {
 	user.Password = passwordHashed
 	user.CreatedAt = time.Now().String()
 	user.IsExists = true
+
 	createUser, err := collection.InsertOne(context.Background(), user)
 
 	if err != nil {
