@@ -13,7 +13,6 @@ type User struct {
 	IsExists              bool               `json:"isExists"`
 	UserId                primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	NumberOfCourseCreated int                `json:"numberOfCoursesCreated"`
-	CoursesList           *NewCourse         `json:"CoursesList"`
 }
 
 type CoursesBuyer struct {
