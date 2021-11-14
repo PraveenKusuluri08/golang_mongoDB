@@ -74,13 +74,14 @@ func getAllUsers() []primitive.M {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var users []primitive.M
 	for cursor.Next(context.Background()) {
 		var user primitive.M
-		err := cursor.Decode(&user)
-		if err != nil {
+		if err := cursor.Decode(&user); err != nil {
 			log.Fatal(err)
 		}
+
 		users = append(users, user)
 	}
 	defer cursor.Close(context.Background())
@@ -212,6 +213,7 @@ func getSingleUser(userId string) interface{} {
 		log.Fatal(err)
 	}
 	singleUser = append(singleUser, user)
+
 	return singleUser
 }
 
