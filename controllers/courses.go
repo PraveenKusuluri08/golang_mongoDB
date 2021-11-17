@@ -80,3 +80,18 @@ func isUserExists(userId string) (int, string) {
 	}
 	return 1, err1.Error()
 }
+
+func checkCourseTitleExists(title string) (int, string) {
+	var course bson.M
+	filter := bson.M{"title": title}
+	var singleCourse []primitive.M
+	err := collection.FindOne(context.Background(), filter).Decode(&course)
+	singleCourse = append(singleCourse, course)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if len(singleCourse[len(singleCourse)-1]) != 0 {
+		return 0, ""
+	}
+	return 1, err.Error()
+}
