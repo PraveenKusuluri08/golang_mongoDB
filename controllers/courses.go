@@ -42,9 +42,8 @@ func createCourse(course model.NewCourse, userId string) string {
 	if count != 0 && message != "" {
 		return "User Not Exists!!"
 	}
-	if id, err := primitive.ObjectIDFromHex(userId); err != nil {
-		course.UserId = id
-	}
+	course.UserId = userId
+	course.CourseExists = true
 	course.CreatedAt = time.Now().String()
 	_, err := Collection.InsertOne(context.Background(), course)
 	if err != nil {
