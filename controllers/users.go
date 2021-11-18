@@ -44,7 +44,7 @@ func createUser(user model.User) interface{} {
 	user.Password = passwordHashed
 	user.CreatedAt = time.Now().String()
 	user.IsExists = true
-
+	//if role is admin no course buought property is allowed
 	createUser, err := collection.InsertOne(context.Background(), user)
 
 	if err != nil {
@@ -222,4 +222,32 @@ func GetSingleUserDocument(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	data := getSingleUser(params["id"])
 	json.NewEncoder(w).Encode(data)
+}
+
+//Update user when the user buys any course
+//The course buyer model needs to fire up
+func updateUserWhenCourseBought(userId string, courseBought model.CoursesBuyer) {
+	count, message := isUserExists(userId)
+	if count != 0 && message != "" {
+		log.Fatal("No user user exists")
+	}
+	courseBought.UserId = userId
+	id, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"CoursesBought": courseBought}}
+	updateUser := collection.FindOneAndUpdate(context.Background(), filter, update)
+
+	fmt.Println(updateUser)
+
+}
+
+func UpdateUserWhenCourseBought(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	params := mux.Vars(r)
+	var courseBought model.CoursesBuyer
+	updateUserWhenCourseBought(params["id"], courseBought)
 }
