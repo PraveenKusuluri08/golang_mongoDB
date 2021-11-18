@@ -9,7 +9,7 @@ type User struct {
 	IsLoggedIn            bool               `json:"isLoggedin"`
 	Role                  int                `json:"role"`
 	CreatedAt             string             `json:"createdAt"`
-	Course                *CoursesBuyer      `json:"course"`
+	CoursesBought         *CoursesBuyer      `json:"course"`
 	IsExists              bool               `json:"isExists"`
 	UserId                primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	NumberOfCourseCreated int                `json:"numberOfCoursesCreated"`
@@ -17,7 +17,9 @@ type User struct {
 
 type CoursesBuyer struct {
 	CoursesNames   []string `json:"coursesnames"`
-	CoursesIds     []string `json:"coursesIds"`
+	CoursesId      string   `json:"coursesIds"`
 	RecentlyBought []string `json:"recentlybought"`
-	Archived       []string `json:"archieved"`
+	CourseArticels []string `json:"coursearticles"`
+	CreatedAt      string   `json:"createdat"`
+	UserId         string   `json:"userid"`
 }
