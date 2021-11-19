@@ -8,3 +8,8 @@ func PasswordHasher(password string) (string, error) {
 }
 
 //match the actual password with the hashed password
+
+func CompareHashAndPassword(password string, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
