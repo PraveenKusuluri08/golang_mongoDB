@@ -16,10 +16,7 @@ type User struct {
 }
 
 type CoursesBuyer struct {
-	CoursesNames   []string `json:"coursesnames"`
-	CoursesId      string   `json:"coursesIds"`
-	RecentlyBought []string `json:"recentlybought"`
-	CourseArticels []string `json:"coursearticles"`
-	CreatedAt      string   `json:"createdat"`
-	UserId         string   `json:"userid"`
+	CoursesNames             []string `json:"coursesnames"`
+	CourseArticels           []string `json:"coursearticles"`
+	RecentlyBoughtCourseDate string   `json:"recentCourseDate"`
 }
