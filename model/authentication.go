@@ -17,3 +17,7 @@ type AuthSignUp struct {
 	Role               int    `json:"role"`
 	AccountCreatedDate string `json:"createdat"`
 }
+
+type Error struct {
+	Error string
+}

@@ -19,5 +19,9 @@ func Router() *mux.Router {
 	//Courses routes
 	router.HandleFunc(`/api/user/createnewcourse/{id}`, controllers.CreateCourse).Methods("POST")
 	router.HandleFunc("/api/user/buyCourse/{id}", controllers.UpdateUserWhenCourseBought).Methods("PUT")
+
+	//Authentication routes
+
+	router.HandleFunc("/api/auth/signin", controllers.SingIn).Methods("POST")
 	return router
 }
