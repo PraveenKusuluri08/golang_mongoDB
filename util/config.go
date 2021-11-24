@@ -3,7 +3,8 @@ package util
 import "github.com/spf13/viper"
 
 type Config struct {
-	MongoURI string `mapstructure:"MONGO_URI"`
+	MongoURI  string `mapstructure:"MONGO_URI"`
+	SecretKey string `mapstructure:"SECRET_KEY"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
