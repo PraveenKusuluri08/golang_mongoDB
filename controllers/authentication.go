@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -17,7 +18,6 @@ import (
 func signinUser(signin model.AuthSignIn) interface{} {
 	isExists, message := IsEmailExists(signin.Email)
 	var actualUser model.User
-
 	filter := bson.M{"email": signin.Email}
 	if isExists && message == "" {
 		if err := collection.FindOne(context.TODO(), filter).Decode(&actualUser); err != nil {
@@ -44,6 +44,32 @@ func SingIn(w http.ResponseWriter, r *http.Request) {
 	data := signinUser(signin)
 	json.NewEncoder(w).Encode(data)
 	// fmt.Println(data)
+
+}
+func signup(signup model.User) interface{} {
+	isExists, message := IsEmailExists(signup.Email)
+	var token model.Token
+	fmt.Println("isExists", isExists)
+	if !isExists {
+		userId := CreateUser(signup)
+		fmt.Println(userId)
+		if userId != nil {
+			tokenString := GenerateJwt(signup.Email)
+			token.TokenString = tokenString
+			token.Email = signup.Email
+			return token
+		}
+	}
+	return message
+}
+
+func SignUp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	var signUp model.User
+	_ = json.NewDecoder(r.Body).Decode(&signUp)
+	token := signup(signUp)
+	json.NewEncoder(w).Encode(token)
 
 }
 

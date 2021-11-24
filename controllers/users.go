@@ -39,7 +39,7 @@ func init() {
 	}
 }
 
-func createUser(user model.User) interface{} {
+func CreateUser(user model.User) interface{} {
 	passwordHashed, _ := util.PasswordHasher(user.Password)
 	user.Password = passwordHashed
 	user.CreatedAt = time.Now().String()
@@ -61,7 +61,7 @@ func CreateUserAccout(w http.ResponseWriter, r *http.Request) {
 	var user model.User
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
-	userId := createUser(user)
+	userId := CreateUser(user)
 	fmt.Println(userId)
 	fmt.Println(reflect.TypeOf(r.Body))
 	json.NewEncoder(w).Encode("User created Successfully")
