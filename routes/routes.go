@@ -25,5 +25,9 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/auth/signin", controllers.SingIn).Methods("POST")
 	router.HandleFunc("/api/auth/signup", controllers.SignUp).Methods("POST")
 
+	//Get Courses By categories
+
+	router.HandleFunc("/api/course/getAllCoursesByCategory/{category}", controllers.GetAllCoursesWithCategories).Methods("GET")
+
 	return router
 }
