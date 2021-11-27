@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/PraveenKusuluri08/model"
@@ -146,4 +147,42 @@ func GetAllCoursesWithCategories(w http.ResponseWriter, r *http.Request) {
 	courses := getAllCourseByCategories(params["category"])
 	json.NewEncoder(w).Encode(courses)
 	defer r.Body.Close()
+}
+
+func deleteCourse(courseId string, iscourseOwner bool, role int, userID string) string {
+	admin, _ := IsAdmin(userID, role)
+
+	id, err := primitive.ObjectIDFromHex(courseId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": id}
+	if iscourseOwner || admin || role == 0 {
+
+		count, _ := Collection.DeleteOne(context.Background(), filter)
+		fmt.Println(count)
+		return "Course deleted Successfully"
+	}
+	return "Failed to delete the course"
+}
+
+func DeleteSingleCourse(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Origin", "*")
+	w.Header().Set("Allow-control-Allow-Methods", "DELETE")
+	params := mux.Vars(r)
+
+	userId := params["userId"]
+	courseId := params["courseId"]
+	iscourseOwner := params["iscourseOwner"]
+	role := params["role"]
+	isCourseOwnerBool, _ := strconv.ParseBool(iscourseOwner)
+	roleConv, _ := strconv.Atoi(role)
+	message := deleteCourse(courseId, isCourseOwnerBool, roleConv, userId)
+
+	json.NewEncoder(w).Encode(bson.M{"message": message})
+
+	defer r.Body.Close()
+
 }
