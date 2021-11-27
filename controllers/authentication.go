@@ -114,3 +114,23 @@ func GenerateJwt(email string) string {
 	}
 	return tokenString
 }
+
+func IsAdmin(userId string, role int) (bool, string) {
+	id, err := primitive.ObjectIDFromHex(userId)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	var user model.User
+	filter := bson.M{"_id": id}
+	ctx, _ := context.WithTimeout(context.Background(), 100*time.Second)
+	err1 := collection.FindOne(ctx, filter).Decode(&user)
+
+	if err1 != nil {
+		return false, "No user exists with the requested id"
+	}
+	if role == user.Role {
+		return true, "User is admin"
+	}
+	return false, "User is not admin"
+}

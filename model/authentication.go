@@ -12,3 +12,7 @@ type ForgotPassword struct {
 type Error struct {
 	Error string
 }
+type ChangePassword struct {
+	Password1 string `json:"password1"`
+	Password2 string `json:"password2"`
+}
