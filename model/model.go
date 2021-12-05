@@ -20,3 +20,12 @@ type CoursesBuyer struct {
 	CourseArticels           []string `json:"coursearticles"`
 	RecentlyBoughtCourseDate string   `json:"recentCourseDate"`
 }
+
+type BuySingleCourse struct {
+	CourseID       string   `json:"courseid"`
+	CourseTags     []string `json:"coursetags"`
+	CourseArticles []string `json:"courseArticles"`
+	Sections       []string `json:"sections"`
+	Quizzes        []string `json:"quizzes"`
+	Links          []string `json:"links"`
+}

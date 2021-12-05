@@ -184,5 +184,20 @@ func DeleteSingleCourse(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(bson.M{"message": message})
 
 	defer r.Body.Close()
+}
+
+//TODO:While updating the course course owner does not change the entire course
+//TODO:He/she must add few Sections or videos on to the sections and few readme files,
+//TODO:quizes etc..........
+func updateCourse(courseId string, isCourseOwnerBool bool) string {
+	id, _ := primitive.ObjectIDFromHex(courseId)
+
+	if isCourseOwnerBool {
+		filter := bson.M{"_id": id}
+		fmt.Println(filter)
+		// Collection.UpdateOne(context.Background(),filter,)
+		return "Course is updated successfully"
+	}
+	return "You are not authorised or not the course creator to update the course"
 
 }

@@ -27,8 +27,9 @@ func Router() *mux.Router {
 
 	//Get Courses By categories
 
-	router.HandleFunc("/api/course/getAllCoursesByCategory/{category}", controllers.GetAllCoursesWithCategories).Methods("GET").Schemes("htpp", "https")
+	router.HandleFunc("/api/course/getAllCoursesByCategory/{category}", controllers.GetAllCoursesWithCategories).Methods("GET")
 
 	router.HandleFunc("/api/course/deletesinglecourse/{courseId}/{userId}/{iscourseOwner}/{role}", controllers.DeleteSingleCourse).Methods("DELETE")
+
 	return router
 }
