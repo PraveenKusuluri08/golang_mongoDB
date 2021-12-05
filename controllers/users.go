@@ -20,8 +20,10 @@ import (
 
 const dbName = "USERS"
 const collectionName = "user_list"
+const cartCollectionName = "cart_collection"
 
 var collection *mongo.Collection
+var cartCollection *mongo.Collection
 
 //Function to connect to the db
 func init() {
@@ -36,6 +38,8 @@ func init() {
 			log.Fatal(err)
 		}
 		collection = client.Database(dbName).Collection(collectionName)
+
+		cartCollection = (*mongo.Collection)(client.Database(dbName).Collection(cartCollectionName))
 	}
 }
 

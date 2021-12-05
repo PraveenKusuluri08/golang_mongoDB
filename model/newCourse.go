@@ -17,3 +17,9 @@ type NewCourse struct {
 	Category          string   `json:"category"`
 	IsCourseOwner     bool     `json:"iscourseowner"`
 }
+type AddToCart struct {
+	Price          int    `json:"price"`
+	UserId         string `json:"userid"`
+	Author         string `json:"author"`
+	IsCourseBought string `json:"iscoursebought"`
+}
