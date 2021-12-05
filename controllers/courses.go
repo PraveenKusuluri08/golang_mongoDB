@@ -149,6 +149,61 @@ func GetAllCoursesWithCategories(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 }
 
+//get all courses from the db
+
+func getAllCourse() []primitive.M {
+	cursor, err := Collection.Find(context.Background(), bson.D{{}}, nil)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	var courses []primitive.M
+	for cursor.Next(context.Background()) {
+		var course primitive.M
+		if err1 := cursor.Decode(&course); err1 != nil {
+			log.Fatal(err)
+		}
+		courses = append(courses, course)
+	}
+	defer cursor.Close(context.Background())
+	return courses
+}
+
+func GetAllCourses(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+	courses := getAllCourse()
+	json.NewEncoder(w).Encode(courses)
+	defer r.Body.Close()
+}
+
+func getSingleCourse(courseId string) interface{} {
+	id, err := primitive.ObjectIDFromHex(courseId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": id}
+	var course bson.M
+	var singleCourse []primitive.M
+	if err1 := Collection.FindOne(context.Background(), filter).Decode(&course); err1 != nil {
+		log.Fatal(err1)
+	}
+	singleCourse = append(singleCourse, course)
+
+	return singleCourse
+}
+
+func GetSingleCourse(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "GET")
+
+	params := mux.Vars(r)
+	singleCourse := getSingleCourse(params["id"])
+
+	defer r.Body.Close()
+	json.NewEncoder(w).Encode(singleCourse)
+
+}
+
 func deleteCourse(courseId string, iscourseOwner bool, role int, userID string) string {
 	admin, _ := IsAdmin(userID, role)
 
@@ -199,5 +254,49 @@ func updateCourse(courseId string, isCourseOwnerBool bool) string {
 		return "Course is updated successfully"
 	}
 	return "You are not authorised or not the course creator to update the course"
+}
+
+//helper function to che the course is exists or not
+
+func isCourseExists(courseId primitive.ObjectID) (int, string) {
+	filter := bson.M{"_id": courseId, "courseexists": true}
+	var course bson.M
+	var singleCourse []primitive.M
+	err := Collection.FindOne(context.Background(), filter).Decode(&course)
+
+	singleCourse = append(singleCourse, course)
+	if len(singleCourse[len(singleCourse)-1]) != 0 {
+		return 0, ""
+	}
+	return 1, err.Error()
+}
+
+//function to add course to the cart
+
+func addCourse(userId string, courseId string, cartCourse model.AddToCart) string {
+	count, msg := isUserExists(userId)
+	id, _ := primitive.ObjectIDFromHex(courseId)
+	courseExistsCount, _ := isCourseExists(id)
+
+	if count != 0 || msg != "" {
+		return "User not exists"
+	} else if courseExistsCount != 0 {
+		return "Requested course is not exists or disabled Please try again"
+	}
+	data, err := cartCollection.InsertOne(context.Background(), cartCourse)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if data.InsertedID != nil {
+		return "Course added to cart successfully"
+	}
+	return "Course is failed to add to the cart"
 
 }
+
+// func AddCourse(w http.ResponseWriter, r *http.Request){
+// 	w.Header().Set("Content-Type","application/json; charset=utf-8")
+// 	w.Header().Set("Allow-Orogin-Allow-Methods", "POST")
+
+// 	url:= "http://localhost:5000/api/"
+// }
