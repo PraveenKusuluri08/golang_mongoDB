@@ -14,6 +14,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+//👇 this function need to fire up only after the payment completion
+
 //Update user when the user buys any course
 //The course buyer model needs to fire up
 func updateUserWhenCourseBought(userId string, courseBought model.CoursesBuyer) string {
@@ -47,3 +49,7 @@ func UpdateUserWhenCourseBought(w http.ResponseWriter, r *http.Request) {
 	userUpdated := updateUserWhenCourseBought(params["id"], courseBought)
 	json.NewEncoder(w).Encode(userUpdated)
 }
+
+//function to add to whishlist
+
+//delete functio to delete the course from the cart

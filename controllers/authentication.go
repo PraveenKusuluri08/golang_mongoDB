@@ -98,7 +98,6 @@ func GenerateJwt(email string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	var mySigninKey = []byte(secretKey.SecretKey)
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
@@ -134,3 +133,9 @@ func IsAdmin(userId string, role int) (bool, string) {
 	}
 	return false, "User is not admin"
 }
+
+//implement isAuthorised method for the privilage the end points
+
+//implement forgot password method
+
+//add mailing service to the application
