@@ -29,3 +29,9 @@ type BuySingleCourse struct {
 	Quizzes        []string `json:"quizzes"`
 	Links          []string `json:"links"`
 }
+
+type Mail struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
+	Purpose string `json:"purpose"`
+}

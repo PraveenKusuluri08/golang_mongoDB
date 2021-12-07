@@ -290,13 +290,27 @@ func addCourse(userId string, courseId string, cartCourse model.AddToCart) strin
 	if data.InsertedID != nil {
 		return "Course added to cart successfully"
 	}
-	return "Course is failed to add to the cart"
-
+	return "Failed to add to add course to the cart"
 }
 
-// func AddCourse(w http.ResponseWriter, r *http.Request){
-// 	w.Header().Set("Content-Type","application/json; charset=utf-8")
-// 	w.Header().Set("Allow-Orogin-Allow-Methods", "POST")
+func AddCourse(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Allow-Orogin-Allow-Methods", "POST")
+	params := mux.Vars(r)
+	id, er := primitive.ObjectIDFromHex(params["id"])
+	if er != nil {
+		log.Fatal("Failed to convert the string to objectId")
+	}
+	filter := bson.M{"_id": id}
+	fmt.Println(filter)
+	var addCourseCart model.AddToCart
+	err := Collection.FindOne(context.Background(), filter).Decode(&addCourseCart)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(addCourseCart)
+	userId := params["userId"]
+	msg := addCourse(userId, params["id"], addCourseCart)
 
-// 	url:= "http://localhost:5000/api/"
-// }
+	json.NewEncoder(w).Encode(msg)
+}
