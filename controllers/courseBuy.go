@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -25,7 +24,7 @@ func updateUserWhenCourseBought(userId string, courseBought model.CoursesBuyer) 
 		return "No user user exists"
 	}
 
-	courseBought.RecentlyBoughtCourseDate = time.Now().String()
+	courseBought.RecentlyBoughtCourseDate = append(courseBought.RecentlyBoughtCourseDate, time.Now().String())
 	id, err := primitive.ObjectIDFromHex(userId)
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +44,6 @@ func UpdateUserWhenCourseBought(w http.ResponseWriter, r *http.Request) {
 	var courseBought model.CoursesBuyer
 	defer r.Body.Close()
 	_ = json.NewDecoder(r.Body).Decode(&courseBought)
-	fmt.Println(courseBought.CourseArticels)
 	userUpdated := updateUserWhenCourseBought(params["id"], courseBought)
 	json.NewEncoder(w).Encode(userUpdated)
 }
