@@ -13,21 +13,12 @@ type User struct {
 	IsExists              bool               `json:"isExists"`
 	UserId                primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	NumberOfCourseCreated int                `json:"numberOfCoursesCreated"`
+	IsPaid                bool               `json:"is_paid"`
 }
 
 type CoursesBuyer struct {
 	CoursesNames             []string `json:"coursesnames"`
-	CourseArticels           []string `json:"coursearticles"`
-	RecentlyBoughtCourseDate string   `json:"recentCourseDate"`
-}
-
-type BuySingleCourse struct {
-	CourseID       string   `json:"courseid"`
-	CourseTags     []string `json:"coursetags"`
-	CourseArticles []string `json:"courseArticles"`
-	Sections       []string `json:"sections"`
-	Quizzes        []string `json:"quizzes"`
-	Links          []string `json:"links"`
+	RecentlyBoughtCourseDate []string `json:"recentCourseDate"`
 }
 
 type Mail struct {
