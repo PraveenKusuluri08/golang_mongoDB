@@ -67,7 +67,7 @@ func CreateCourse(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(message)
 }
 
-//helper function for checking user is Exists or in the db
+// helper function for checking user is Exists or in the db
 func isUserExists(userId string) (int, string) {
 	id, err := primitive.ObjectIDFromHex(userId)
 	if err != nil {
@@ -241,9 +241,9 @@ func DeleteSingleCourse(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 }
 
-//TODO:While updating the course course owner does not change the entire course
-//TODO:He/she must add few Sections or videos on to the sections and few readme files,
-//TODO:quizes etc..........
+// TODO:While updating the course course owner does not change the entire course
+// TODO:He/she must add few Sections or videos on to the sections and few readme files,
+// TODO:quizes etc..........
 func updateCourse(courseId string, isCourseOwnerBool bool) string {
 	id, _ := primitive.ObjectIDFromHex(courseId)
 
@@ -313,4 +313,9 @@ func AddCourse(w http.ResponseWriter, r *http.Request) {
 	msg := addCourse(userId, params["id"], addCourseCart)
 
 	json.NewEncoder(w).Encode(msg)
+}
+
+func GitCourseToUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Orogin-Allow-Methods", "POST")
 }
